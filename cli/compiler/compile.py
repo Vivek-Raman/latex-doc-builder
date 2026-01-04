@@ -1,3 +1,7 @@
-def compile_latex(file: str) -> str:
-    """Compile a LaTeX file and return the output."""
-    return f"Compiling {file}"
+from pathlib import Path
+
+
+def compile_project(dir: Path) -> str:
+    """Compile a LaTeX project and return the output."""
+
+    return f"Compiling {dir}"

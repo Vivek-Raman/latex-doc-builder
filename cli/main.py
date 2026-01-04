@@ -1,6 +1,6 @@
 from pathlib import Path
 import click
-from cli import __version__
+from cli import __version__, compiler
 from cli import project
 from cli import settings
 
@@ -37,6 +37,14 @@ def init(ctx, template: str):
     dir = ctx.obj['dir']
     project.create.create_project(dir, template)
 
+
+# TODO: compile project
+@cli.command()
+@click.pass_context
+def compile(ctx):
+    """Compile the LaTeX project."""
+    dir = ctx.obj['dir']
+    compiler.compile_project(dir)
 
 @cli.command()
 @click.argument("query", required=True)
