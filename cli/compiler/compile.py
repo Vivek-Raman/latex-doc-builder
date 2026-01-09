@@ -5,6 +5,8 @@ import urllib.error
 import hashlib
 import click
 
+IGNORED_PATHS = ['.gitignore', '.git', '.env', '.DS_Store']
+
 
 def _generate_project_id(dir: Path) -> str:
     """Generate a project ID based on directory path hash."""
@@ -22,6 +24,8 @@ def _collect_resources(dir: Path) -> list:
     """Collect all files in the directory as resources for compilation."""
     resources = []
     for file_path in sorted(dir.iterdir()):
+        if file_path.name in IGNORED_PATHS:
+            continue
         if file_path.is_file():
             try:
                 content = file_path.read_text(encoding='utf-8')
@@ -41,7 +45,11 @@ def _build_compile_payload(resources: list, compiler: str,
         "compile": {
             "options": {
                 "compiler": compiler,
-                "timeout": timeout
+                "timeout": timeout,
+                "draft": False,
+                "compileGroup": "standard",
+                # "compileBackendClass": "e2",
+                "enablePdfCaching": False
             },
             "rootResourcePath": "main.tex",
             "resources": resources

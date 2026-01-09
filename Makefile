@@ -13,7 +13,8 @@ clsi-build:
 	@./clsi/build-clsi.sh
 
 clsi-up:
-	docker compose -f clsi/docker-compose.yml up -d
+	@docker compose -f clsi/docker-compose.yml down
+	@docker compose -f clsi/docker-compose.yml up -d
 
 clsi-down:
 	docker compose -f clsi/docker-compose.yml down
