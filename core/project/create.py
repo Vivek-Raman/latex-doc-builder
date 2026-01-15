@@ -1,13 +1,12 @@
 from pathlib import Path
 import importlib.resources
-import click
 from typing import Dict
 
 
 def load_template(template: str) -> Dict[str, str]:
     try:
         template_ref = importlib.resources.files(
-            "cli.project.templates") / template
+            "core.project.templates") / template
         template_path = Path(template_ref)
 
         if not template_path.exists():
@@ -36,8 +35,8 @@ def load_template(template: str) -> Dict[str, str]:
 
 
 def create_project(path: Path, template: str) -> None:
-    click.echo(
-        f"+ Creating a new LaTeX project using the {template} template...")
+    # click.echo(
+    #     f"+ Creating a new LaTeX project using the {template} template...")
 
     try:
         template_files = load_template(template)
@@ -46,13 +45,13 @@ def create_project(path: Path, template: str) -> None:
         for filename, content in template_files.items():
             target_path = path / filename
             target_path.write_text(content, encoding='utf-8')
-            click.echo(f"  + Created {filename}")
+            # click.echo(f"  + Created {filename}")
 
-        click.echo(f"+ Project initialized successfully!")
+        # click.echo(f"+ Project initialized successfully!")
 
     except FileNotFoundError as e:
-        click.echo(f"Error: {e}", err=True)
+        # click.echo(f"Error: {e}", err=True)
         raise click.Abort()
     except Exception as e:
-        click.echo(f"Error creating project: {e}", err=True)
+        # click.echo(f"Error creating project: {e}", err=True)
         raise click.Abort()

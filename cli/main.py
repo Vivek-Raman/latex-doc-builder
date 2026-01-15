@@ -1,9 +1,9 @@
 from pathlib import Path
 import click
-from cli import __version__, compiler
-from cli import project
-from cli import settings
-from cli.chat import chatbot
+from core import __version__, compiler
+from core import project
+from core import settings
+from core.chat import chatbot
 
 
 @click.group()

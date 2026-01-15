@@ -1,5 +1,4 @@
-import click
-from cli.settings.common import get_config_dir
+from core.settings.common import get_config_dir
 import tomlkit
 
 
@@ -8,7 +7,7 @@ def fetch_all() -> dict:
     config_file = config_dir / "config.toml"
     if not config_file.exists():
         return {}
-    click.echo(f"+ Loading config from file: {config_file.absolute()}")
+    # click.echo(f"+ Loading config from file: {config_file.absolute()}")
     fp = open(config_file, encoding="utf-8")
     config = tomlkit.load(fp)
     fp.close()

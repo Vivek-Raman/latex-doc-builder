@@ -1,11 +1,10 @@
 from pathlib import Path
-import click
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.openrouter import OpenRouterModel
 from pydantic_ai.providers.openrouter import OpenRouterProvider
-from cli.project.read import read_file, list_files
-from cli.project.edit import edit_file
-from cli import settings
+from core.project.read import read_file, list_files
+from core.project.edit import edit_file
+from core import settings
 from typing import TypedDict
 
 
@@ -64,7 +63,7 @@ file content, not just the changed sections.""")
         Returns:
             The contents of the file as a string.
         """
-        click.echo(f"+ Reading file {file_path}...")
+        # click.echo(f"+ Reading file {file_path}...")
         full_path = ctx.deps['folder_path'] / file_path
         if not full_path.exists():
             return f"Error: File '{file_path}' does not exist in the project directory."
@@ -88,7 +87,7 @@ file content, not just the changed sections.""")
         Returns:
             A success message or error description.
         """
-        click.echo(f"+ Editing file {file_path}...")
+        # click.echo(f"+ Editing file {file_path}...")
         full_path = ctx.deps['folder_path'] / file_path
         try:
             # Ensure parent directory exists
@@ -110,7 +109,7 @@ file content, not just the changed sections.""")
         Returns:
             A formatted string listing all files in the directory.
         """
-        click.echo(f"+ Listing files...")
+        # click.echo(f"+ Listing files...")
         files = list_files(ctx.deps['folder_path'], recursive=recursive)
         if not files:
             return "No files found in the project directory."

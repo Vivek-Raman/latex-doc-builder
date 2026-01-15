@@ -3,7 +3,6 @@ import json
 import urllib.request
 import urllib.error
 import hashlib
-import click
 
 IGNORED_PATHS = ['.gitignore', '.git', '.env', '.DS_Store']
 
@@ -32,8 +31,8 @@ def _collect_resources(dir: Path) -> list:
                 relative_path = file_path.name
                 resources.append({"path": relative_path, "content": content})
             except UnicodeDecodeError:
-                click.echo(f"+ Skipping binary file: {file_path.name}",
-                           err=True)
+                # click.echo(f"+ Skipping binary file: {file_path.name}",
+                #            err=True)
                 continue
     return resources
 
@@ -107,12 +106,12 @@ def _handle_success(compile_result: dict, response_data: dict) -> str:
 
     if pdf_file:
         pdf_url = pdf_file.get("url")
-        click.echo(f"+ Compilation successful!")
-        click.echo(f"+ PDF available at: {pdf_url}")
+        # click.echo(f"+ Compilation successful!")
+        # click.echo(f"+ PDF available at: {pdf_url}")
         return pdf_url
     else:
-        click.echo("+ Compilation successful but no PDF found in output files",
-                   err=True)
+        # click.echo("+ Compilation successful but no PDF found in output files",
+        #            err=True)
         return json.dumps(response_data, indent=2)
 
 
@@ -124,11 +123,13 @@ def _handle_failure(compile_result: dict, response_data: dict) -> str:
     stderr_contents = _fetch_stderr_content(output_files)
 
     print(compile_result)
-    click.echo(f"+ Compilation failed: {error_message}", err=True)
+    # click.echo(f"+ Compilation failed: {error_message}", err=True)
     if stdout_contents:
-        click.echo(f"+ Output: {stdout_contents}", err=True)
+        pass
+        # click.echo(f"+ Output: {stdout_contents}", err=True)
     if stderr_contents:
-        click.echo(f"+ Error: {stderr_contents}", err=True)
+        pass
+        # click.echo(f"+ Error: {stderr_contents}", err=True)
     return json.dumps(response_data, indent=2)
 
 
@@ -166,12 +167,12 @@ def compile_project(dir: Path,
 
     except urllib.error.HTTPError as e:
         error_body = e.read().decode('utf-8') if e.fp else "No error details"
-        click.echo(f"+ HTTP Error {e.code}: {error_body}", err=True)
+        # click.echo(f"+ HTTP Error {e.code}: {error_body}", err=True)
         raise
     except urllib.error.URLError as e:
-        click.echo(f"+ Connection error: {e.reason}", err=True)
-        click.echo(f"+ Make sure CLSI is running at {clsi_url}", err=True)
+        # click.echo(f"+ Connection error: {e.reason}", err=True)
+        # click.echo(f"+ Make sure CLSI is running at {clsi_url}", err=True)
         raise
     except Exception as e:
-        click.echo(f"+ Error: {str(e)}", err=True)
+        # click.echo(f"+ Error: {str(e)}", err=True)
         raise

@@ -1,6 +1,5 @@
-from cli.settings.common import get_config_dir
+from core.settings.common import get_config_dir
 import tomlkit
-import click
 
 
 def is_first_run() -> bool:
@@ -8,9 +7,9 @@ def is_first_run() -> bool:
 
 
 def setup_first_run() -> None:
-    click.echo("+ Performing first-time setup...")
+    # click.echo("+ Performing first-time setup...")
     config_dir = get_config_dir()
-    click.echo(f"+ Creating config directory: {config_dir.absolute()}")
+    # click.echo(f"+ Creating config directory: {config_dir.absolute()}")
     config_dir.mkdir(parents=True, exist_ok=True)
 
     default_config = tomlkit.table()
@@ -36,7 +35,7 @@ def setup_first_run() -> None:
     default_config.add("openai_api_model", api_model)
 
     config_file = config_dir / "config.toml"
-    click.echo(f"+ Writing config to file: {config_file.absolute()}")
+    # click.echo(f"+ Writing config to file: {config_file.absolute()}")
     config_file.write_text(default_config.as_string(), encoding="utf-8")
 
-    click.echo(f"+ First-time setup complete!")
+    # click.echo(f"+ First-time setup complete!")
