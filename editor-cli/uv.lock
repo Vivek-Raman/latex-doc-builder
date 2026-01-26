@@ -193,6 +193,7 @@ version = "1.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
+    { name = "genai-prices" },
     { name = "platformdirs" },
     { name = "pydantic-ai-slim", extra = ["openrouter"] },
     { name = "tomlkit" },
@@ -206,6 +207,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "click", specifier = ">=8.3.1" },
+    { name = "genai-prices" },
     { name = "platformdirs", specifier = ">=4.5.1" },
     { name = "pydantic-ai-slim", extras = ["openrouter"], specifier = ">=1.47.0" },
     { name = "tomlkit", specifier = ">=0.13.3" },

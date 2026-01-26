@@ -93,9 +93,9 @@ def build_pyinstaller(target_triple: str) -> Path:
     if dist_dir.exists():
         shutil.rmtree(dist_dir)
 
-    # Hidden imports commonly needed by uvicorn, fastapi, and pydantic-ai
-    hidden_imports = [
+    copy_metadata = [
         "genai_prices",
+        "pydantic_ai_slim",
     ]
 
     # Build the command with hidden imports
@@ -113,9 +113,9 @@ def build_pyinstaller(target_triple: str) -> Path:
         "--specpath",
         str(build_dir),
     ]
-    for module in hidden_imports:
-        cmd.extend(["--hidden-import", module])
-    cmd.append("cli/server.py")
+    for module in copy_metadata:
+        cmd.extend(["--copy-metadata", module])
+    cmd.append("cli/main.py")
 
     # Run PyInstaller via uv to use the dev dependency
     run(cmd, cwd=CLI_DIR)
