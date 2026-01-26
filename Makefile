@@ -2,23 +2,28 @@
 %:
 	@:
 
+init:
+	@cd editor-cli && uv sync
+	@cd editor-gui && npm install
+	@uv run build.py --link-only
+
 cli:
-	cd editor-cli && uv run latex-chatbot --dir=temp $(filter-out $@,$(MAKECMDGOALS))
+	@cd editor-cli && uv run latex-chatbot --dir=temp $(filter-out $@,$(MAKECMDGOALS))
+
+gui:
+	@cd editor-gui && npm run dev
 
 dev:
-	cd editor-gui && npm run tauri dev
+	@echo "Starting development server..."
+	@uv run build.py --link-only
+	@echo "Starting Tauri app..."
+	@cd editor-gui && npm run tauri dev
+
+serve:
+	@cd editor-cli && uv run python -m cli.server
 
 build:
 	@uv run build.py
-
-cli-build:
-	@cd editor-cli && uv run build.py
-
-gui-build:
-	@cd editor-gui && npm run tauri build
-
-cli-build:
-	@cd editor-cli && uv run build.py
 
 clsi-build:
 	@echo "Building CLSI Docker image..."

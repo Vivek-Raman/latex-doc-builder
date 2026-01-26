@@ -8,6 +8,7 @@ This script:
 3. Copies the sidecar to gui/src-tauri/bin/
 4. Runs tauri build to generate the final app bundle
 """
+print("Starting build script...")
 
 import platform
 import shutil
@@ -92,8 +93,13 @@ def build_pyinstaller(target_triple: str) -> Path:
     if dist_dir.exists():
         shutil.rmtree(dist_dir)
 
-    # Run PyInstaller via uv to use the dev dependency
-    run([
+    # Hidden imports commonly needed by uvicorn, fastapi, and pydantic-ai
+    hidden_imports = [
+        "genai_prices",
+    ]
+
+    # Build the command with hidden imports
+    cmd = [
         "uv",
         "run",
         "pyinstaller",
@@ -106,9 +112,13 @@ def build_pyinstaller(target_triple: str) -> Path:
         str(build_dir),
         "--specpath",
         str(build_dir),
-        "cli/main.py",
-    ],
-        cwd=CLI_DIR)
+    ]
+    for module in hidden_imports:
+        cmd.extend(["--hidden-import", module])
+    cmd.append("cli/server.py")
+
+    # Run PyInstaller via uv to use the dev dependency
+    run(cmd, cwd=CLI_DIR)
 
     # Find the built executable
     exe_path = dist_dir / sidecar_name
@@ -155,7 +165,8 @@ def main():
     copy_sidecar(exe_path, target_triple)
 
     # Step 4: Build Tauri app
-    build_tauri()
+    if "--link-only" not in sys.argv:
+        build_tauri()
 
     print("\n=== Build complete ===")
 

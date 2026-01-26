@@ -1,5 +1,11 @@
 from pathlib import Path
+import os
+import sys
 import click
+
+if getattr(sys, "frozen", False):
+    os.environ.setdefault("PYDANTIC_DISABLE_PLUGINS", "1")
+
 from core import __version__, compiler
 from core import project
 from core import settings
