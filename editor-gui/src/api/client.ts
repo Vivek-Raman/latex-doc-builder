@@ -73,6 +73,15 @@ export async function getConfig(
   return request(endpoint, options);
 }
 
+export async function updateConfig(
+  config: Partial<ConfigData>
+): Promise<ApiResponse<{ config: ConfigData }>> {
+  return request("/config", {
+    method: "POST",
+    body: JSON.stringify(config),
+  });
+}
+
 export async function nukeConfig(): Promise<ApiResponse<{ message: string }>> {
   return request("/nuke", {
     method: "POST",

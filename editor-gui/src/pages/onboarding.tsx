@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import { getConfig } from "@/api/client";
+import { getConfig, updateConfig } from "@/api/client";
 
 const ACCORDION_STEPS = ["provider", "apiKey", "fullName"] as const;
 type AccordionStep = (typeof ACCORDION_STEPS)[number];
@@ -57,7 +58,9 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function Onboarding() {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<AccordionStep>("provider");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -113,9 +116,21 @@ export default function Onboarding() {
     return () => controller.abort();
   }, [form]);
 
-  function onSubmit(data: FormData) {
-    console.log("Form submitted:", data);
-    // TODO: Handle form submission
+  async function onSubmit(data: FormData) {
+    setIsSubmitting(true);
+    try {
+      await updateConfig({
+        openai_api_base: data.apiUrl,
+        openai_api_key: data.apiKey,
+        full_name: data.fullName,
+      });
+      navigate("/select-dir");
+    } catch (error) {
+      console.error("Failed to save settings:", error);
+      // TODO: Show error toast/notification
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const isLastStep = currentStep === "fullName";
@@ -302,8 +317,8 @@ export default function Onboarding() {
           >
             Reset
           </Button>
-          <Button type="button" onClick={handleNext}>
-            {isLastStep ? "Submit" : "Next"}
+          <Button type="button" onClick={handleNext} disabled={isSubmitting}>
+            {isSubmitting ? "Saving..." : isLastStep ? "Submit" : "Next"}
           </Button>
         </CardFooter>
       </Card>

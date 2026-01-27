@@ -61,6 +61,13 @@ class ChatRequest(BaseModel):
     query: str
 
 
+class UpdateConfigRequest(BaseModel):
+    openai_api_base: str | None = None
+    openai_api_key: str | None = None
+    openai_api_model: str | None = None
+    full_name: str | None = None
+
+
 # Startup event
 @app.on_event("startup")
 async def startup():
@@ -130,6 +137,19 @@ async def get_config(key: str | None = Query(default=None)):
             return {"success": True, "data": {"config": {key: value}}}
     except HTTPException:
         raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/config")
+async def post_config(request: UpdateConfigRequest):
+    try:
+        updates = {
+            k: v
+            for k, v in request.model_dump().items() if v is not None
+        }
+        config = settings.update_config(updates)
+        return {"success": True, "data": {"config": config}}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
