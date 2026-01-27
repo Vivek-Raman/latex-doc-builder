@@ -121,12 +121,13 @@ async def get_config(key: str | None = Query(default=None)):
             config = settings.fetch_all()
             if not config:
                 raise HTTPException(status_code=404, detail="No config found")
+            return {"success": True, "data": {"config": dict(config)}}
         else:
-            config = settings.fetch_one(key)
-            if not config:
+            value = settings.fetch_one(key)
+            if value is None:
                 raise HTTPException(status_code=404,
                                     detail=f"No config found for {key}")
-        return {"success": True, "data": {"config": config.as_string()}}
+            return {"success": True, "data": {"config": {key: value}}}
     except HTTPException:
         raise
     except Exception as e:

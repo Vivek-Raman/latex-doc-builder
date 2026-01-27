@@ -4,7 +4,7 @@ import Home from "./pages/home";
 
 function App() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-svh">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/onboarding" element={<Onboarding />} />

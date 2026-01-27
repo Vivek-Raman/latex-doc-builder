@@ -34,6 +34,8 @@ def setup_first_run() -> None:
                              type=click.STRING)
     default_config.add("openai_api_model", api_model)
 
+    default_config.add("full_name", "")
+
     config_file = config_dir / "config.toml"
     # click.echo(f"+ Writing config to file: {config_file.absolute()}")
     config_file.write_text(default_config.as_string(), encoding="utf-8")

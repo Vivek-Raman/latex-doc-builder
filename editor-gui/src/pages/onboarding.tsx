@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { getConfig } from "@/api/client";
 
 const ACCORDION_STEPS = ["provider", "apiKey", "fullName"] as const;
 type AccordionStep = (typeof ACCORDION_STEPS)[number];
@@ -77,6 +78,40 @@ export default function Onboarding() {
       form.setValue("apiUrl", PROVIDER_URLS[provider]);
     }
   }, [provider, form]);
+
+  // Fetch existing config on mount
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function fetchConfig() {
+      try {
+        const response = await getConfig(undefined, { signal: controller.signal });
+        if (response.success && response.data?.config) {
+          const config = response.data.config;
+
+          // Derive provider from apiUrl
+          let derivedProvider: FormData["provider"] = "other";
+          if (config.openai_api_base === PROVIDER_URLS.openai) {
+            derivedProvider = "openai";
+          } else if (config.openai_api_base === PROVIDER_URLS.openrouter) {
+            derivedProvider = "openrouter";
+          }
+
+          form.reset({
+            provider: derivedProvider,
+            apiUrl: config.openai_api_base || PROVIDER_URLS.openai,
+            apiKey: config.openai_api_key || "",
+            fullName: config.full_name || "",
+          });
+        }
+      } catch {
+        // Config not found or error - use defaults
+      }
+    }
+    fetchConfig();
+
+    return () => controller.abort();
+  }, [form]);
 
   function onSubmit(data: FormData) {
     console.log("Form submitted:", data);

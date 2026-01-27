@@ -58,11 +58,19 @@ export async function chat(
   });
 }
 
+export interface ConfigData {
+  openai_api_base?: string;
+  openai_api_key?: string;
+  openai_api_model?: string;
+  full_name?: string;
+}
+
 export async function getConfig(
-  key?: string
-): Promise<ApiResponse<{ config: string }>> {
+  key?: string,
+  options?: RequestInit,
+): Promise<ApiResponse<{ config: ConfigData }>> {
   const endpoint = key ? `/config?key=${encodeURIComponent(key)}` : "/config";
-  return request(endpoint);
+  return request(endpoint, options);
 }
 
 export async function nukeConfig(): Promise<ApiResponse<{ message: string }>> {
